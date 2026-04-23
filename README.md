@@ -48,7 +48,7 @@ Sigue estos pasos para ejecutar el proyecto en tu computadora:
 ### 1. Clonar o descargar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/Cizco-2005/tulum_paginaweb
 cd tulum_paginaweb
 ```
 

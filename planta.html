@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Planta</title>
+<link rel="icon" type="image/png" href="assets/images/logotulum.png">
+
+<link rel="stylesheet" href="css/styles.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+    <img src="assets/images/logotulum.png" alt="Logo Empresa">
+</div>
+
+<a href="plantas.html">Inicio</a>
+<a href="jardin.html">Mapa</a>
+<a href="#">Galería</a>
+
+</div>
+
+
+<!-- LOADER -->
+
+<div id="loader" class="loader-container">
+
+<div class="loader"></div>
+<p>Cargando planta...</p>
+
+</div>
+
+
+<!-- CONTENIDO PRINCIPAL -->
+
+<div class="main">
+
+<div class="glass-card">
+
+<div class="header">
+<span>Jardín Botánico de Tulum</span>
+</div>
+
+
+<div class="content">
+
+<!-- IMAGEN -->
+
+<div class="image-box">
+<img id="imagen">
+</div>
+
+
+<!-- TEXTO -->
+
+<div class="text-section">
+
+<h1 id="nombre"></h1>
+
+<h3>DESCRIPCIÓN</h3>
+
+<p id="descripcion"></p>
+
+
+<div class="buttons">
+
+<a id="ubicacion">
+<button class="btn-outline">Ubicación</button>
+</a>
+
+<a id="galeria">
+<button class="btn-filled">Galería</button>
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+async function cargarPlanta(){
+
+const params = new URLSearchParams(window.location.search);
+let id = params.get("id");
+
+if(!id){
+
+document.getElementById("descripcion").innerText =
+"No se encontró la planta";
+
+return;
+
+}
+
+let res = await fetch(`/api/plantas/${id}`);
+let planta = await res.json();
+
+
+/* ocultar loader */
+
+document.getElementById("loader").style.display="none";
+
+
+/* animación */
+
+document.querySelector(".glass-card").classList.add("fade-in");
+
+
+/* nombre */
+
+document.getElementById("nombre").innerText =
+planta.nombre || planta.cientifico || "Planta";
+
+
+/* descripción */
+
+document.getElementById("descripcion").innerText =
+planta.descripcion || "No hay descripción disponible";
+
+
+/* imagen */
+
+document.getElementById("imagen").src =
+planta.imagen || "assets/images/default.jpg";
+
+
+/* enlace ubicación */
+
+document.getElementById("ubicacion").href =
+`ubicacion.html?id=${planta.id}`;
+
+
+/* enlace galería */
+
+document.getElementById("galeria").href =
+`galeria.html?id=${planta.id}`;
+
+}
+
+cargarPlanta();
+
+</script>
+
+</body>
+</html>

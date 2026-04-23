@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Admin Plantas</title>
+<link rel="icon" type="image/png" href="assets/images/logotulum.png">
+
+<link rel="stylesheet" href="css/admin.css">
+
+</head>
+
+<body>
+
+<div class="glass-card">
+
+<h1>ADMIN PLANTAS</h1>
+
+<button class="logout" onclick="logout()">Cerrar sesión</button>
+
+<hr>
+
+<h3>Importar planta desde API</h3>
+
+<input id="cientifico" placeholder="Nombre científico">
+<input
+type="text"
+id="cientifico"
+placeholder="Nombre científico"
+onkeyup="buscarPlantas()" 
+autocomplete="off"
+>
+
+<div id="sugerencias"></div>
+<div id="preview"></div>
+
+<button onclick="importarPlanta()">
+Importar planta automáticamente
+</button>
+
+<button onclick="importarMuchas()">
+Importar muchas plantas
+</button>
+
+<hr>
+
+<h3>Agregar planta manualmente</h3>
+
+<input id="nombre" placeholder="Nombre planta">
+
+<input id="cientifico_manual" placeholder="Nombre científico">
+
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
+<input type="file" id="imagen">
+
+<button onclick="agregarPlanta()">
+AGREGAR PLANTA
+</button>
+
+<hr>
+
+<h3>Plantas guardadas</h3>
+
+<div id="lista"></div>
+
+</div>
+
+
+<script src="js/admin.js"></script>
+
+<script>
+
+/* proteger admin */
+
+if(localStorage.getItem("admin") !== "true"){
+
+window.location.href = "login.html";
+
+}
+
+
+/* cerrar sesión */
+
+function logout(){
+
+localStorage.removeItem("admin");
+
+window.location.href = "login.html";
+
+}
+
+</script>
+
+</body>
+
+</html>

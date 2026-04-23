@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Admin Plantas</title>
+<link rel="icon" type="image/png" href="assets/images/logotulum.png">
+
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="glass-card">
+
+<h1>ADMIN PLANTAS</h1>
+
+<h3>Agregar planta</h3>
+
+<input id="nombre" placeholder="Nombre planta">
+
+<input id="cientifico" placeholder="Nombre científico">
+
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
+<input type="file" id="imagen">
+
+<br><br>
+
+<button onclick="agregarPlanta()">AGREGAR PLANTA</button>
+
+<hr>
+
+<h3>Lista de plantas</h3>
+
+<div id="lista"></div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Distribución de la Planta</title>
+<link rel="icon" type="image/png" href="assets/images/logotulum.png">
+
+<link rel="stylesheet" href="css/ubicacion.css">
+
+<!-- Leaflet -->
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- Clusters -->
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+
+
+
+</head>
+
+<body>
+
+    
+<div class="glass-card">
+
+<h1>Distribución de la Planta</h1>
+
+<div id="imagen"></div>
+
+<div id="taxonomia"></div>
+
+
+
+<div id="map"></div>
+
+<br>
+
+<button class="btn btn-volver">Volver</button>
+
+</div>
+
+
+<!-- LIBRERÍAS -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+
+<script>
+
+let map;
+let markers;
+let heat;
+
+
+/* =========================
+OBTENER ID
+========================= */
+
+const params = new URLSearchParams(window.location.search);
+let id = params.get("id");
+
+
+/* =========================
+CARGAR PLANTA
+========================= */
+
+async function cargarPlanta(){
+
+let res = await fetch(`/api/plantas/${id}`);
+let planta = await res.json();
+
+
+/* imagen */
+
+document.getElementById("imagen").innerHTML = `
+<img src="${planta.imagen || "assets/images/default.jpg"}">
+`;
+
+
+/* taxonomia */
+
+document.getElementById("taxonomia").innerHTML = `
+<h3>Taxonomía</h3>
+<p>${planta.taxonomia || "No disponible"}</p>
+`;
+
+
+/* mapa */
+
+map = L.map("map").setView([20,0],2);
+
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{ maxZoom:18 }
+).addTo(map);
+
+
+/* cargar distribución científica */
+
+cargarDistribucion(planta.cientifico || planta.nombre);
+
+}
+
+
+/* =========================
+CARGAR DISTRIBUCIÓN GBIF
+========================= */
+
+async function cargarDistribucion(nombre){
+
+try{
+
+let url =
+`https://api.gbif.org/v1/occurrence/search?scientificName=${encodeURIComponent(nombre)}&hasCoordinate=true&limit=300`;
+
+let res = await fetch(url);
+let data = await res.json();
+
+markers = L.markerClusterGroup();
+
+let heatPoints = [];
+
+
+data.results.forEach(r => {
+
+if(r.decimalLatitude && r.decimalLongitude){
+
+let lat = r.decimalLatitude;
+let lon = r.decimalLongitude;
+
+
+/* marcador */
+
+let marker = L.marker([lat,lon]);
+
+marker.bindPopup(`
+<b>${nombre}</b>
+<br>
+${r.country || "Ubicación desconocida"}
+`);
+
+markers.addLayer(marker);
+
+
+/* heatmap */
+
+heatPoints.push([lat,lon,0.5]);
+
+}
+
+});
+
+
+map.addLayer(markers);
+
+
+/* heatmap */
+
+L.heatLayer(heatPoints,{
+radius:25,
+blur:20
+}).addTo(map);
+
+}catch(e){
+
+console.log("Error cargando distribución");
+
+}
+
+}
+
+
+/* =========================
+BOTON VOLVER
+========================= */
+
+document.querySelector(".btn-volver").onclick = ()=>{
+
+window.location.href = `planta.html?id=${id}`;
+
+};
+
+
+/* =========================
+INICIAR
+========================= */
+
+cargarPlanta();
+
+</script>
+
+</body>
+</html>
